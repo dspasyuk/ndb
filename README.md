@@ -34,9 +34,40 @@ db.find(collection, {})
 db.findOne(collection, {x:1, y:2, z:3})
 #### Delete one item from the collection
 db.deleteOne(collection, {x:1, y:2, z:3})
-#### Find all items in the collection
-db.find(collection, {x:1, y:2, z:3})
+#### Update many item in the collection
+db.deleteMany(collection, {x:1, y:2, z:3})
 #### Update one item in the collection
 db.updateOne(collection, {x:1, y:2, z:3}, {x:4, y:5, z:6})
-#### Find all items in the collection
-db.find(collection, {x:4, y:5, z:6})
+#### Update many item in the collection
+db.updateMany(collection, {x:1, y:2, z:3}, {x:4, y:5, z:6})
+
+### Example:
+
+async function test(){
+    var db = new ndb();
+    const collection = "testrun"+Math.random().toString();
+    console.log("insertOne 20 times");
+    for (let i = 0; i <20; i++){
+        db.insertOne(collection, {x:i, y:i+i, z:i*i})
+    }
+    console.log("insertMany [5X{x:1, y:2, z:3}]");
+    db.insertMany(collection,  Array(5).fill({x:1, y:2, z:3}));
+
+    console.log("find all");
+    console.log(await db.find(collection, {}));   
+
+    console.log("Find one {x:1, y:2, z:3}");
+    console.log(await db.findOne(collection, {x:1, y:2, z:3}));
+
+    console.log("deleteOne {x:1, y:2, z:3}");
+    db.deleteOne(collection, {x:1, y:2, z:3});
+
+    console.log("Find 4 items remaining {x:1, y:2, z:3}");
+    console.log(await db.find(collection, {x:1, y:2, z:3}));
+
+    console.log("updateOne item {x:1, y:2, z:3} to {x:4, y:5, z:6}");   
+    db.updateOne(collection, {x:1, y:2, z:3}, {x:4, y:5, z:6});
+
+    console.log("Find updated item  {x:4, y:5, z:6}");
+    console.log(await db.find(collection,  {x:4, y:5, z:6}));
+}
