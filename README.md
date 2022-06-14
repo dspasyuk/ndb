@@ -8,11 +8,11 @@ nedb: https://github.com/louischatriot/nedb
 
 wget https://github.com/deonis1/ndb 
 
-unzip ndb
+unzip ndb; cd ndb; npm install
 
-cd ndb
+Via NPM: 
 
-npm install
+npm install https://github.com/deonis1/ndb 
 
 # Usage 
 
@@ -34,16 +34,19 @@ db.find(collection, {})
 db.findOne(collection, {x:1, y:2, z:3})
 #### Delete one item from the collection
 db.deleteOne(collection, {x:1, y:2, z:3})
-#### Update many item in the collection
+#### Delete many item in the collection
 db.deleteMany(collection, {x:1, y:2, z:3})
 #### Update one item in the collection
 db.updateOne(collection, {x:1, y:2, z:3}, {x:4, y:5, z:6})
 #### Update many item in the collection
 db.updateMany(collection, {x:1, y:2, z:3}, {x:4, y:5, z:6})
 
-### Example:
+
+
+## Examples
 
 async function test(){
+    
     var db = new ndb();
     const collection = "testrun"+Math.random().toString();
     console.log("insertOne 20 times");
