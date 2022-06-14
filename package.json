@@ -1,0 +1,15 @@
+{
+  "name": "ndb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ndb.js",
+  "dependencies": {
+    "nedb": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ndb.js"
+  },
+  "author": "Denis Spasyuk",
+  "license": "ISC"
+}
