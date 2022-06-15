@@ -8,24 +8,31 @@ const path = require('path');
 // init constructor function
 function ndb() {
     this.db = {};
-    this.start_date = new Date(Date.now() - ( 3600 * 1000 * 24*365*3));
+    this.datapath = "db";
 } 
 
+ndb.prototype.new_collection = function(collection) {
+    this.db.collection={};
+    this.db.collection =  new Datastore({filename: path.join(this.datapath, collection+".db"), timestampData:false});
+    this.db.collection.loadDatabase();
+    return this.db.collection;
+}
+
 //init collection
-ndb.prototype.collection =  function(collection, dbpath = "db"){
+ndb.prototype.collection =   function(collection){
     if (this.db.collection){
-        return this.db.collection;
+        if (this.db.collection.persistence.filename== path.join(this.datapath, collection+".db")){
+            return this.db.collection;
+        }else{
+            return this.new_collection(collection, this.datapath);
+        }
     }else{
-        this.db.collection={};
-        this.db.collection = new Datastore({filename: path.join(dbpath, collection+".db"), timestampData:false});
-        this.db.collection.loadDatabase();
-        return this.db.collection;
+       return this.new_collection(collection, this.datapath);
     }
 }
 
 // handle errors
 ndb.prototype.handle_errors = function(err, msg){
-        if (err) throw err;
         if (err){
            console.log(msg, err);
         }
@@ -48,6 +55,7 @@ ndb.prototype.insertOne = async function(collection, obj){
 ndb.prototype.insertMany = async function(collection, obj){
    await this.insert(collection, obj);
 }
+
 // generic update function
 ndb.prototype.update = async function(collection, target, newitem, multi){
     var self = this;
@@ -55,14 +63,18 @@ ndb.prototype.update = async function(collection, target, newitem, multi){
     this.db.collection = this.collection(collection);
     this.db.collection.update(target, { $set: newitem }, { upsert: true, multi: multi }, (err)=> { self.handle_errors(err, msg)});
 }
+
 // update many items
 ndb.prototype.updateMany = async function(collection, target, newitem){
    await this.update(collection, target, newitem, true);
 }
+
 // update one item
 ndb.prototype.updateOne = async function(collection, target, newitem){
+//    console.log(collection, target, newitem);
    await this.update(collection, target, newitem, false);
 }
+
 // find all items
 ndb.prototype.find = async function(collection, queryobj){
     var self = this;
@@ -76,6 +88,13 @@ ndb.prototype.find = async function(collection, queryobj){
           })
       }); 
 }
+
+// find all items
+ndb.prototype.stats = async function(collection){
+    var self = this;
+    return this.collection(collection);
+}
+
 // find one item
 ndb.prototype.findOne = async function(collection, queryobj){
     var self = this;
@@ -89,6 +108,7 @@ ndb.prototype.findOne = async function(collection, queryobj){
           })
       }); 
 }
+
 // generic remove function
 ndb.prototype.remove = async function(collection, target, multi){
     var self = this;
@@ -96,10 +116,12 @@ ndb.prototype.remove = async function(collection, target, multi){
     this.db.collection = this.collection(collection);
     this.db.collection.remove(target, {multi: multi }, (err)=> { self.handle_errors(err, msg)});
 }
+
 // delete many items
 ndb.prototype.deleteMany = async function(collection, target){
     await this.remove(collection, target, true);
 }
+
 // delete one item
 ndb.prototype.deleteOne = async function(collection, target){
     await this.remove(collection, target, false);
