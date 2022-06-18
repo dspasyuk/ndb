@@ -89,7 +89,7 @@ ndb.prototype.find = async function(collection, queryobj){
       }); 
 }
 
-// find all items
+// dummy stats function
 ndb.prototype.stats = async function(collection){
     var self = this;
     return this.collection(collection);
