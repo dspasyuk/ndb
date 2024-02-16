@@ -6,13 +6,13 @@ nedb: https://github.com/louischatriot/nedb
 
 # Installation 
 
-wget https://github.com/deonis1/ndb 
+wget https://github.com/dspasyuk/ndb 
 
 unzip ndb; cd ndb; npm install
 
 Via NPM: 
 
-npm install https://github.com/deonis1/ndb 
+npm install https://github.com/dspasyuk/ndb 
 
 # Usage 
 
